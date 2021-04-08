@@ -60,7 +60,7 @@ mutable struct FMTree
                 end
             end
         end
-        # points = sample(s_init, s_goal, lane_id, frames, Int(N_prob*2), 150.0, world)
+        points = sample(s_init, s_goal, lane_id, frames, Int(N_prob*2), 150.0, world)
         
         println(length(points))
 
