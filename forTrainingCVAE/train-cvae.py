@@ -249,8 +249,8 @@ EPOCH = 30              # train the training data n times, to save time, we just
 BATCH_SIZE = 256
 LR = 0.0001               # learning rate
 
-train_Occ = train_Occ.reshape(len(train_Occ), 540)
-test_Occ = Variable(torch.from_numpy(np.array(test_Occ).reshape(len(test_Occ), 540).astype(np.float32)))
+train_Occ = train_Occ.reshape(len(train_Occ), 10, 10, 54)
+test_Occ = Variable(torch.from_numpy(np.array(test_Occ).reshape(len(test_Occ), 10, 10, 54).astype(np.float32)))
 test_i_g = Variable(torch.from_numpy(np.array(test_i_g).astype(np.float32)))
 test_x = Variable(torch.from_numpy(np.array(test_x).astype(np.float32)))
 # cnn_train_data = CondDataset(train_Occ, train_init_goal, train_x, transform=transforms.ToTensor())
@@ -273,24 +273,24 @@ class CNNModel(nn.Module):
                 out_channels=16,  # n_filters
                 kernel_size=5,  # filter size
                 stride=1,  # filter movement/step
-                padding=2,  # 如果想要 con2d 出来的图片长宽没有变化, padding=(kernel_size-1)/2 当 stride=1
-            ),  # output shape (16, 28, 28)
+                padding=2,  
+            ),  
             nn.ReLU(),  # activation
-            nn.MaxPool2d(kernel_size=2),  # 在 2x2 空间里向下采样, output shape (16, 14, 14)
+            nn.MaxPool2d(kernel_size=2),  
         )
-        self.conv2 = nn.Sequential(  # input shape (16, 14, 14)
+        self.conv2 = nn.Sequential( 
             # nn.Conv2d(20, 16, 5, 27),
-            nn.Conv2d(16, 32, 5, 1, 2),  # output shape (32, 14, 14)
+            nn.Conv2d(16, 32, 5, 1, 2), 
             nn.ReLU(),  # activation
-            nn.MaxPool2d(2),  # output shape (32, 7, 7)
+            nn.MaxPool2d(2), 
         )
-        self.cnnout = nn.Linear(832, 128)  # fully connected layer, output 24 classes
+        self.cnnout = nn.Linear(832, 128) 
 
     def forward(self, c):
         # c = c.type(torch.FloatTensor)
         c = self.conv1(c)
         c = self.conv2(c)
-        c = c.view(c.size(0), -1)  # 展平多维的卷积图成 (batch_size, 32 * 7 * 7)
+        c = c.view(c.size(0), -1) 
         c = self.cnnout(c)
 
         return c
