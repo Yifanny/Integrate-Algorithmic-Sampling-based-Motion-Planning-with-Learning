@@ -379,13 +379,12 @@ class CNNCVAE(nn.Module):
 
 
 cvae = CNNCVAE()
-weight = Variable(torch.Tensor([1,1,1,1]))
 
 # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 def loss_func(z_mu, z_logvar, b_x, recon_x):
     KL_loss = 10**-3 * torch.sum(torch.exp(z_logvar) + z_mu**2 - 1. - z_logvar, 1)
-    MSE_loss = torch.sqrt(torch.sum(weight * (b_x - recon_x) ** 2))/ BATCH_SIZE
+    MSE_loss = torch.sqrt(torch.sum((b_x - recon_x) ** 2))/ BATCH_SIZE
     return torch.mean(KL_loss + MSE_loss)
 
 # cvae = cvae.cuda()
